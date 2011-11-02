@@ -19,7 +19,10 @@ class Server {
 		void handleClients();
 
 	private:
-		queue<int>	_clientQueue;
+		fd_set				_clientSet;
+		queue<int>			_clientQueue;
+		pthread_mutex_t*	_clientQueueMutex;
+		int					_max_sd;
 };
 
 #endif

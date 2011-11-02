@@ -7,15 +7,19 @@
 
 class WorkerThread : public BaseThread {
 	public:
-		WorkerThread(pthread_mutex_t *trigger_mutex, queue<WorkJob> *workQueue, void *arg);
+		WorkerThread(void *arg);
 		~WorkerThread();
 
 	public:
 		void	run(void *arg);
+		void	addJob(WorkJob *job);
+		void	trigger();
 		bool	ready();
 	private:
-		pthread_mutex_t*	_trigger;
+		queue<WorkJob *>	_workQueue;
 		bool				_busy;
+		pthread_mutex_t*	_trigger;
+		pthread_mutex_t*	_queMutex;
 };
 
 #endif

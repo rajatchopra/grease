@@ -6,23 +6,38 @@
 
 using namespace std;
 
-class Server {
+class Server : public BaseThread {
 	public:
-		Server();
+		Server(bool handlePersistentClients =false, bool runInBackground =false, int port =5120);
 		~Server();
 
 	public:
 		void serve();
+		virtual WorkJob* getNewWorkJob(int sock);
+		virtual WorkerThread* getNewWorkerThread();
 
 	private:
-		void run(void *arg);
-		void handleClients();
+		virtual void run();
+		void handlePersistentClients();
+		void pushToWorkerThread(int sock);
+		void pushToWorkerThread(WorkJob *job);
 
 	private:
-		fd_set				_clientSet;
-		queue<int>			_clientQueue;
-		pthread_mutex_t*	_clientQueueMutex;
-		int					_max_sd;
+		int							_port;
+		vector<WorkerThread *>		_workerThreads;
+		PersistentClientHandler*	_persistentClientHandler;
+};
+
+class PersistentClientHandler : public BaseThread {
+	public:
+		PersistentClientHandler(Server *);
+		~PersistentClientHandler();
+	private:
+		int						_max_sd;
+		fd_set					_clientSet;
+		Server*					_server;
+		queue<WorkJob *>		_clientQueue;
+		pthread_mutex_t*		_clientQueueMutex;
 };
 
 #endif

@@ -2,6 +2,10 @@
 #ifndef __MEMBER_TABLE_HXX__
 #define __MEMBER_TABLE_HXX__
 
+#include <map>
+#include <string>
+
+
 class MemberTable {
     public:
         MemberTable();
@@ -11,7 +15,7 @@ class MemberTable {
         void declareDeadMember();
         void resetMemberTable();
     private:
-        vector<MemberNode *> _memberList;
+        map<MemberNode *, string> _memberList;
 };
 
 #endif

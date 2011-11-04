@@ -3,7 +3,7 @@
 #define __USER_INTERFACE_HXX__
 
 #include <map>
-#include <String>
+#include <string>
 #include "Recycler.hxx"
 
 using namespace std;
@@ -19,10 +19,10 @@ class UserInterface : public BaseObject {
         char*       getFileName(const char*key);
         UserTable*  getBucketTable(const char *bucketName);
     private:
-        map<String, UserTable*>     _bucketMap;
+        map<string, UserTable*>     _bucketMap;
         Recycler    _recylcer;
-        String       _configPath;
-        String       _clusterName;
+        string       _configPath;
+        string       _clusterName;
 
 };
 

@@ -5,7 +5,12 @@
 class Ear : public Server {
 };
 
-class EarJob : public WorkJob {
+class EarWork : public WorkJob {
+    public:
+        EarWork();
+        ~EarWork();
+    public:
+        virtual void perform();
 };
 
 #endif

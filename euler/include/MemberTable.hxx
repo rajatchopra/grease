@@ -14,6 +14,7 @@ class MemberTable {
         void addMember();
         void declareDeadMember();
         void resetMemberTable();
+        string  to_json();
     private:
         map<MemberNode *, string> _memberList;
 };

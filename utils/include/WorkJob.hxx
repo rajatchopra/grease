@@ -6,8 +6,10 @@ class WorkJob {
 	public:
 		WorkJob(int sockid);
 		~WorkJob();
-	private:
-		int	_socket;
+	public:
+		virtual bool perform();
+	public:
+		int	socket_;
 };
 
 #endif

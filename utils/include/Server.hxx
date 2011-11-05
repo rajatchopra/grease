@@ -15,10 +15,10 @@ class Server : public BaseThread {
 		void serve();
 		virtual WorkJob* getNewWorkJob(int sock);
 		virtual WorkerThread* getNewWorkerThread();
+		void closeJob(WorkJob *job, bool status);
 
 	private:
 		virtual void run();
-		void handlePersistentClients();
 		void pushToWorkerThread(int sock);
 		void pushToWorkerThread(WorkJob *job);
 
@@ -32,6 +32,9 @@ class PersistentClientHandler : public BaseThread {
 	public:
 		PersistentClientHandler(Server *);
 		~PersistentClientHandler();
+	public:
+		void run();
+		void addClient(WorkJob *job);
 	private:
 		int						_max_sd;
 		fd_set					_clientSet;

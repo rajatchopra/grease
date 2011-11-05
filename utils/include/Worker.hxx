@@ -7,7 +7,7 @@
 
 class WorkerThread : public BaseThread {
 	public:
-		WorkerThread(void *arg);
+		WorkerThread(Server *server);
 		~WorkerThread();
 
 	public:
@@ -20,6 +20,7 @@ class WorkerThread : public BaseThread {
 		bool				_busy;
 		pthread_mutex_t*	_trigger;
 		pthread_mutex_t*	_queMutex;
+		Server*				_server;
 };
 
 #endif

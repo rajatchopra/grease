@@ -97,9 +97,9 @@ Server::getNewWorkJob(int sock) {
 }
 
 void
-Server::closeJob(WorkJob *job) {
+Server::closeJob(WorkJob *job, bool status) {
 	// worker thread has indicated that its done with this socket
-	if (_persistentClientHandler) {
+	if (_persistentClientHandler && status) {
 		_persistentClientHandler->addClient(job);
 	}
 	else {
@@ -138,6 +138,12 @@ Server::pushToWorkerThread(WorkJob *job) {
 	}
 	return;
 }
+
+
+////////////////////////////////////////////////////////////////
+// PersistentClientHandler Implementation 
+////////////////////////////////////////////////////////////////
+
 
 PersistentClientHandler::PersistentClientHandler(Server *server) {
 	_server = server;

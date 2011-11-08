@@ -7,7 +7,14 @@ class WorkJob {
 		WorkJob(int sockid);
 		~WorkJob();
 	public:
-		virtual bool perform();
+        void            recieve(int &argc, char ** &data);
+        bool            send(int argc, char** data);
+        bool            send(int length, char* size);
+        bool            send(BinaryData *binData);
+		virtual bool    perform();
+    private:
+        int             sendAll();
+        BinaryData      recieveAll();
 	public:
 		int	socket_;
 };

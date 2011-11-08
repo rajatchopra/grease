@@ -1,6 +1,13 @@
 
 #include "Ear.hxx"
 
+enum {
+    GC_ERR_COMMAND =0,
+    GC_MEMBERSHIP,
+    GC_DATA_TABLES,
+    GC_DATA_VERSIONS
+} GcCommandType;
+
 Ear::Ear(int portNumber) : Server(false, false, portNumber) {
 }
 
@@ -16,6 +23,19 @@ EarWork::EarWork(int sock) : WorkJob(sock) {
 }
 
 EarWork::~EarWork() {
+}
+
+GcCommandType
+EarWork::recieveCommand() {
+    vector<BinaryData*> data;
+    bool status = this->recieve(data);
+    if (!status) return GC_ERR_COMMAND;
+    if (data.length() != 1) return GC_ERR_COMMAND;
+
+    BinaryData *cmdData = data[0];
+    GcCommandType cmd = (GcCommandType) this->getIntegerBinary(cmdData);
+    delete cmdData;
+    return cmd;
 }
 
 void
@@ -57,5 +77,9 @@ EarWork::perform() {
     }
     // flow never reaches here
     return;
+}
+
+GcCommandType
+EarWork::recieveCommand(int &argc, char ** &argv) {
 }
 

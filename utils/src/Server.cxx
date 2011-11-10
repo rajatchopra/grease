@@ -99,6 +99,9 @@ Server::getNewWorkJob(int sock) {
 void
 Server::closeJob(WorkJob *job, bool status) {
 	// worker thread has indicated that its done with this socket
+    // a false status means that socket is closed and no more stuff is needed of it
+    // a true status means that current exchange is complete but the socket should
+    // be monitored for any read requests on it.
 	if (_persistentClientHandler && status) {
 		_persistentClientHandler->addClient(job);
 	}
@@ -188,7 +191,10 @@ PersistentClientHandler::run() {
 					for (iter = clients.begin(); iter != clients.end(); iter++) {
 						WorkJob *job = (*iter);
 						int sock = job->socket_;
-						if (FD_ISSET(sock, _clientSet)) _server->pushToWorkerThread(job);
+						if (FD_ISSET(sock, _clientSet)) {
+                            this->removeClient(job);
+                            _server->pushToWorkerThread(job);
+                        }
 					}
 				}
 				break;
@@ -200,6 +206,13 @@ void
 PersistentClientHandler::addClient(WorkJob *job) {
 	pthread_mutex_lock(_clientQueueMutex);
 	_clientQueue.push(job);
+	pthread_mutex_unlock(_clientQueueMutex);
+}
+
+void
+PersistentClientHandler::removeClient(WorkJob *job) {
+	pthread_mutex_lock(_clientQueueMutex);
+	_clientQueue.remove(job);
 	pthread_mutex_unlock(_clientQueueMutex);
 }
 

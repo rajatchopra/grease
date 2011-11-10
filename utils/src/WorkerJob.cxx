@@ -79,16 +79,51 @@ WorkJob::recieve(vector<BinaryData *> &data) {
 
 bool
 WorkJob::send(int length, char* data) {
-    return sendAll(length, data);
+    return sendAll(length +8, this->streamLineBinData(length, data));
+}
+
+bool
+WorkJob::send(string &data) {
+    return sendAll(data.length() +8, this->streamLineBinData(data.length(), data.c_str()));
 }
 
 bool
 WorkJob::send(BinaryData *binData) {
-    return sendAll(binData->size_, binData->data_);
+    return sendAll(binData->size_ +8, this->streamLineBinData(binData));
 }
 
 bool
-WorkJob::sendAll(int size, char* data) {
+WorkJob::send(vector<BinaryData*> &binDataVector) {
+    vector<BinaryData *>::iterator iter;
+    BinaryData *lastElem = binDataVector.back();
+    binDataVector.pop_back();
+    int total =0;
+    vector<char *> charVector;
+    for (iter = binDataVector.begin(); iter != binDataVector.end(); iter++) {
+        BinaryData *binData = (BinaryData *) (*iter);
+        total += binData.size_ +8;
+    }
+    total += lastElem.size_ +8;
+
+    char *buf = new char[total];
+    char *localBuf = buf;
+    for (iter = binDataVector.begin(); iter != binDataVector.end(); iter++) {
+        BinaryData *binData = (BinaryData *) (*iter);
+        char *stream = this->streamLineBinData(binData, true);
+        memcpy(localBuf, stream);
+        localBuf += binData.size_ +8;
+        delete []stream;
+    }
+    char *stream = this->streamLineBinData(lastElem);
+    memcpy(localBuf, stream);
+    delete []stream;
+
+    this->send(total, buf);
+    delete []buf;
+}
+
+bool
+WorkJob::sendAll(int size, const char* data) {
     int total = 0;        // how many bytes we've sent
     int bytesleft = size; // how many we have left to send
     int n;
@@ -112,6 +147,20 @@ WorkJob::recieveAll(int size, BinaryData &data) {
     }
     data.assign(size, buf);
     return true;
+}
+
+char*
+WorkJob::streamLineBinData(BinaryData* data, bool split = false) {
+    return this->streamLineBinData(data->size_, data->data_);
+}
+
+char*
+WorkJob::streamLineBinData(int len, const char* data, bool split = false) {
+    char *buf = new char[len +8];
+    *((int *)buf) = split?DATASEND_SPLIT:DATASEND_COMPLETE;
+    *((int *)(buf +4)) = len;
+    memcpy(buf +8, data);
+    return buf;
 }
 
 //	public:

@@ -10,10 +10,12 @@ class WorkJob {
         void            recieve(int &argc, char ** &data);
         bool            send(int argc, char** data);
         bool            send(int length, char* size);
+        bool            send(string data);
         bool            send(BinaryData *binData);
 		virtual bool    perform();
     private:
-        int             sendAll();
+        bool sendAll(int size, const char* data);
+        bool recieveAll(int size, BinaryData &data);
         BinaryData      recieveAll();
 	public:
 		int	socket_;

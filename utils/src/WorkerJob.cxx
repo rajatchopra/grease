@@ -58,7 +58,7 @@ WorkJob::recieve(vector<BinaryData *> &data) {
                 int length = getDataLength(tempData);
                 status = recieveAll(length, tempData);
                 if (!status) return false;
-                data.push_back(new BinaryData(tempData));
+                data.push_back(new BinaryData(length, tempData));
                 return this->recieve(data);
             }
         case DATASEND_COMPLETE:
@@ -68,7 +68,7 @@ WorkJob::recieve(vector<BinaryData *> &data) {
                 int length = getDataLength(tempData);
                 status = recieveAll(length, tempData);
                 if (!status) return false;
-                data.push_back(new BinaryData(tempData));
+                data.push_back(new BinaryData(length, tempData));
                 return status;
             }
         default:

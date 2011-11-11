@@ -10,6 +10,7 @@ class BinaryData {
     public:
         void    merge(BinaryData &addend);
         BinaryData& operator += (const BinaryData &first);
+        char*   toStr();
     public:
         int     size_;
         char*   data_;

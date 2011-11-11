@@ -67,6 +67,14 @@ BinaryData::assign(int size, const char*data) {
     }
 }
 
+char*
+BinaryData::toStr() {
+    char *to_str = new char[this->size_ +1];
+    strncpy(to_str, this->data_, this->size_);
+    to_str[this->size_] = '\0';
+    return to_str;
+}
+
 //    public:
 //        int     size_;
 //        char*   data_;

@@ -20,8 +20,8 @@ class MouthWork : public WorkJob {
         MouthWork();
         ~MouthWork();
     public:
-        virtual void perform();
-}
+        virtual bool perform();
+};
 
 #endif
 
